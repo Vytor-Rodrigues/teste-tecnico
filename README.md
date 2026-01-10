@@ -94,4 +94,3 @@ Use seu conhecimento, explore a documentação e busque soluções criativas.
 Mostre o melhor do seu **raciocínio lógico e domínio de PHP** 🚀
 
 ---
-"# teste-tecnico" 

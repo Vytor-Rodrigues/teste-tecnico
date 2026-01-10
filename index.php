@@ -1,75 +1,50 @@
-<?php
-session_start();
-require 'connection.php';
-
-$connection = new Connection();
-$pdo = $connection->getConnection();
-?>
-
 <!doctype html>
 <html lang="en">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Prova PHP</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-  </head>
-  <body>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+</head>
+
+<body>
     <?php include('navbar.php'); ?>
-<div class="container mt-4">
-    <?php include('message.php'); ?>
+    <div class="container mt-4">
         <div class="row">
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Lista de Usuários
-                            <a href="usuario-create.php" class="btn btn-primary float-end">Adicionar Usuário</a>
+                        <h4>Listas Cores/Nomes
                         </h4>
                     </div>
                     <div class="card-body">
                         <table class="table table-bordered table-striped">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Nome</th>
-                                    <th>Email</th>
-                                    <th>Ações</th>
+                                    <th style="width: 33.33%">Gerenciar Nomes</th>
+                                    <th style="width: 33.33%">Gerenciar Cores</th>
+                                    <th style="width: 33.33%">Últimos vinculados(nomes/cores)</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php 
-                                $stmt = $pdo->prepare("SELECT * FROM users");
-                                $stmt->execute();
-
-                                $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-                                if($usuarios > 0){
-                                    foreach($usuarios as $users){
-                                ?>
-                                <tr>
-                                    <td><?=$users['id']?></td>
-                                    <td><?=$users['name']?></td>
-                                    <td><?=$users['email']?></td>
-                                    <td>
-                                        <a href="" class="btn btn-secondary btn-sm">Visualizar</a>
-                                        <a href="" class="btn btn-success btn-sm">Editar</a>
-                                        <form action="" method="POST" class="d-inline">
-                                            <button type="submit" name="delete_usuario" value="1" class="btn btn-danger btn-sm">
-                                                Deletar
-                                            </button>
-                                    </td>
-                                </tr>
-                                <?php }} else { 
-                                    echo "<h5>Nenhum usuário encontrado.</h5>";
-                                }?>
-                            </tbody>  
+                                        <tr>
+                                            <td><a href="usuario/usuario-screen.php" class="btn btn-primary w-100">Crie/liste Nomes</a></td>
+                                            <td><a href="cores/cores-screen.php" class="btn btn-primary w-100">Crie/liste Cores</a></td>
+                                            <td><a href="usuario-create.php" class="btn btn-primary w-100">Ultimo mês</a></td>
+                                        </tr>
+                            </tbody>
                         </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-        
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-  </body>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+        crossorigin="anonymous"></script>
+</body>
+
 </html>
