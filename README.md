@@ -1,5 +1,3 @@
----
-
 # 🧠 Teste Técnico — PHP + SQLite
 
 ## 🎯 Objetivo do Projeto
