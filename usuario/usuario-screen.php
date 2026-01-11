@@ -27,6 +27,7 @@ $pdo = $connection->getConnection();
                     <div class="card-header">
                         <h4>Lista de Usuários
                             <a href="usuario-create.php" class="btn btn-primary float-end">Adicionar Usuário</a>
+                            <a href="../index.php" class="btn btn-danger float-end" style="margin-right: 5px;">VOLTAR</a>
                         </h4>
                     </div>
                     <div class="card-body">
@@ -49,12 +50,21 @@ $pdo = $connection->getConnection();
 
                                 if ($usuarios > 0) {
                                     foreach ($usuarios as $users) {
+                                        $stmt_colors = $pdo->prepare("SELECT color_id FROM user_colors WHERE user_id = :user_id");
+                                        $stmt_colors->execute([':user_id' => $users['id']]);
+                                        $user_colors = $stmt_colors->fetch(PDO::FETCH_ASSOC);
+                                        
+                                        $color_count = 0;
+                                        if ($user_colors && !empty($user_colors['color_id'])) {
+                                            $color_ids = array_filter(array_map('trim', explode(',', $user_colors['color_id'])));
+                                            $color_count = count($color_ids);
+                                        }
                                         ?>
                                         <tr>
                                             <td><?= $users['id'] ?></td>
                                             <td><?= $users['name'] ?></td>
                                             <td><?= $users['email'] ?></td>
-                                            <td>0</td>
+                                            <td><?= $color_count ?></td>
                                             <td>
                                                 <a href="usuario-view.php?id=<?= $users['id'] ?>"
                                                     class="btn btn-secondary btn-sm">Visualizar</a>
@@ -62,6 +72,7 @@ $pdo = $connection->getConnection();
                                                     class="btn btn-success btn-sm">Editar</a>
                                                 <form action="usuario-action.php" method="POST" class="d-inline">
                                                     <input type="hidden" name="usuario_id" value="<?= $users['id'] ?>">
+                                                    <input type="hidden" name="cores_count" value="<?= $color_count ?>">
                                                     <button type="submit" name="delete_usuario" class="btn btn-danger btn-sm">
                                                         Deletar
                                                     </button>

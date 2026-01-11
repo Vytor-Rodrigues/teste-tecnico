@@ -43,6 +43,30 @@ $connection = new Connection();
 
                             if ($total > 0) {
                                 $cor = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                                // Buscar todos os usuários que têm essa cor vinculada
+                                $stmt_all_colors = $pdo->prepare("SELECT user_id, color_id FROM user_colors");
+                                $stmt_all_colors->execute();
+                                $all_user_colors = $stmt_all_colors->fetchAll(PDO::FETCH_ASSOC);
+
+                                $users_with_color = [];
+                                foreach ($all_user_colors as $user_color_record) {
+                                    if (!empty($user_color_record['color_id'])) {
+                                        // Separar os IDs de cores
+                                        $color_ids = array_filter(array_map('trim', explode(',', $user_color_record['color_id'])));
+                                        // Verificar se a cor atual está presente
+                                        if (in_array($color_id, $color_ids)) {
+                                            // Buscar o nome do usuário
+                                            $stmt_user = $pdo->prepare("SELECT name FROM users WHERE id = :user_id");
+                                            $stmt_user->execute([':user_id' => $user_color_record['user_id']]);
+                                            $user = $stmt_user->fetch(PDO::FETCH_ASSOC);
+                                            if ($user) {
+                                                $users_with_color[] = $user['name'];
+                                            }
+                                        }
+                                    }
+                                }
+
                                 ?>
 
                                 <div class="mb-3">
@@ -57,6 +81,11 @@ $connection = new Connection();
                                         <?= $cor['hex'] ?>
                                     </p>
                                 </div>
+                                    <div class="mb-3">
+                                        <label>Nomes Vinculados</label>
+                                        <p class="form-control">
+                                            <?= !empty($users_with_color) ? implode(', ', $users_with_color) : 'Nenhum usuário vinculado' ?>
+                                        </p>
                                 <?php
                             } else {
                                 echo "<h5>ID de usuário não encontrado.</h5>";

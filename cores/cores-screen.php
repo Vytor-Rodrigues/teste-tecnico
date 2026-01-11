@@ -50,12 +50,27 @@ $pdo = $connection->getConnection();
 
                                 if ($cores > 0) {
                                     foreach ($cores as $colors) {
+                                        // Buscar quantos usuários têm essa cor vinculada
+                                        $stmt_users = $pdo->prepare("SELECT color_id FROM user_colors");
+                                        $stmt_users->execute();
+                                        $all_user_colors = $stmt_users->fetchAll(PDO::FETCH_ASSOC);
+                                        
+                                        $user_count = 0;
+                                        foreach ($all_user_colors as $user_color_record) {
+                                            if (!empty($user_color_record['color_id'])) {
+                                                // Separar os IDs de cores e verificar se a cor atual está presente
+                                                $color_ids = array_filter(array_map('trim', explode(',', $user_color_record['color_id'])));
+                                                if (in_array($colors['id'], $color_ids)) {
+                                                    $user_count++;
+                                                }
+                                            }
+                                        }
                                         ?>
                                         <tr>
                                             <td><?= $colors['id'] ?></td>
                                             <td><?= $colors['name'] ?></td>
                                             <td><?= $colors['hex'] ?></td>
-                                            <td>0</td>
+                                            <td><?= $user_count ?></td>
                                             <td>
                                                 <a href="cores-view.php?id=<?= $colors['id'] ?>"
                                                     class="btn btn-secondary btn-sm">Visualizar</a>
@@ -63,6 +78,7 @@ $pdo = $connection->getConnection();
                                                     class="btn btn-success btn-sm8">Editar</a>
                                                 <form action="cores-action.php" method="POST" class="d-inline">
                                                     <input type="hidden" name="cor_id" value="<?= $colors['id'] ?>">
+                                                     <input type="hidden" name="users_count" value="<?= $user_count ?>">
                                                     <button type="submit" name="delete_cor" class="btn btn-danger btn-sm">
                                                         Deletar
                                                     </button>

@@ -32,7 +32,7 @@
                                         <tr>
                                             <td><a href="usuario/usuario-screen.php" class="btn btn-primary w-100">Crie/liste Nomes</a></td>
                                             <td><a href="cores/cores-screen.php" class="btn btn-primary w-100">Crie/liste Cores</a></td>
-                                            <td><a href="usuario-create.php" class="btn btn-primary w-100">Ultimo mês</a></td>
+                                            <td><a href="ultimos/ultimos_vinculados.php" class="btn btn-primary w-100">Ultimos vinculados</a></td>
                                         </tr>
                             </tbody>
                         </table>

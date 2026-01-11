@@ -21,20 +21,19 @@ $connection = new Connection();
                 <div class="card">
                     <div class="card-header">
                         <h4>Visualizar Usuário
-                            <a href="../index.php" class="btn btn-danger float-end">VOLTAR</a>
+                            <a href="usuario-screen.php" class="btn btn-danger float-end">VOLTAR</a>
                         </h4>
                     </div>
                     <div class="card-body">
                         <?php
 
                         if (isset($_GET['id'])) {
-                            // Obter o ID do usuário da URL
+
                             $usuario_id = $_GET['id'];
                             $sql = "SELECT * FROM users WHERE id = :id";
                             $stmt = $connection->getConnection()->prepare($sql);
                             $stmt->execute(['id' => $usuario_id]);
 
-                            // Verificar se os usuários existem
                             $pdo = $connection->getConnection();
                             $stmt2 = $pdo->prepare("SELECT COUNT(*) as total FROM users");
                             $stmt2->execute();
@@ -43,6 +42,22 @@ $connection = new Connection();
 
                             if ($total > 0) {
                                 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                                $stmt_colors = $pdo->prepare("SELECT color_id FROM user_colors WHERE user_id = :user_id");
+                                $stmt_colors->execute([':user_id' => $usuario_id]);
+                                $user_colors = $stmt_colors->fetch(PDO::FETCH_ASSOC);
+
+                                $cores_nomes = [];
+                                if ($user_colors && !empty($user_colors['color_id'])) {
+
+                                    $color_ids = explode(',', $user_colors['color_id']);
+                                    $color_ids = array_map('trim', $color_ids);
+
+                                    $placeholders = implode(',', array_fill(0, count($color_ids), '?'));
+                                    $stmt_names = $pdo->prepare("SELECT name FROM colors WHERE id IN ($placeholders)");
+                                    $stmt_names->execute($color_ids);
+                                    $cores_nomes = $stmt_names->fetchAll(PDO::FETCH_COLUMN);
+                                }
                                 ?>
 
                                 <div class="mb-3">
@@ -55,6 +70,12 @@ $connection = new Connection();
                                     <label>Email</label>
                                     <p class="form-control">
                                         <?= $usuario['email'] ?>
+                                    </p>
+                                </div>
+                                <div class="mb-3">
+                                    <label>Cores Vinculadas</label>
+                                    <p class="form-control">
+                                        <?= $cores_nomes !== null ? implode(', ', $cores_nomes) : 'Nenhuma cor vinculada' ?>
                                     </p>
                                 </div>
                                 <?php
