@@ -69,7 +69,6 @@ if (isset($_POST['update_usuario'])) {
         ':email' => $email,
     ]);
 
-    // Verificar se já existe registro de cores para esse usuário
     $stmt_check = $pdo->prepare("SELECT COUNT(*) FROM user_colors WHERE user_id = :user_id");
     $stmt_check->execute([':user_id' => $usuario_id]);
     $exists = $stmt_check->fetchColumn();
@@ -78,7 +77,6 @@ if (isset($_POST['update_usuario'])) {
         $colorIdsString = implode(', ', $selected_color_ids);
         
         if ($exists > 0) {
-            // Atualizar registro existente
             $sql_color = "UPDATE user_colors SET color_id = :color_id WHERE user_id = :user_id";
             $stmt_color = $pdo->prepare($sql_color);
             $stmt_color->execute([
@@ -86,7 +84,6 @@ if (isset($_POST['update_usuario'])) {
                 ':color_id' => $colorIdsString,
             ]);
         } else {
-            // Inserir novo registro
             date_default_timezone_set('America/Sao_Paulo');
             $dataEnvio = date('Y-m-d, H:i:s');
             
@@ -99,7 +96,6 @@ if (isset($_POST['update_usuario'])) {
             ]);
         }
     } else {
-        // Se não há cores selecionadas, deletar o registro se existir
         if ($exists > 0) {
             $sql_delete = "DELETE FROM user_colors WHERE user_id = :user_id";
             $stmt_delete = $pdo->prepare($sql_delete);

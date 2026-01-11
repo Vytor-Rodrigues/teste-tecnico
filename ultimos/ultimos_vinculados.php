@@ -25,12 +25,14 @@ $pdo = $connection->getConnection();
             <div class="col-md-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4>Lista de Usuários
+                        <h4>Relatorios
                             <a href="../index.php" class="btn btn-danger float-end" style="margin-right: 5px;">VOLTAR</a>
-                            <a href="ultimos_vinculados.php?ordem=DESC" class="btn btn-primary float" style="margin-right: 5px;">Mais novos</a>
-                            <a href="ultimos_vinculados.php?ordem=ASC" class="btn btn-primary float" style="margin-right: 5px;">Mais antigos</a>
-                            <a href="ultimos_vinculados.php?ordem=DESC" class="btn btn-primary float" style="margin-right: 5px;">Ultimo dia</a>
-                            <a href="ultimos_vinculados.php?ordem=DESC" class="btn btn-primary float" style="margin-right: 5px;">Ultimos 5 dias</a>
+                            <a href="ultimos_vinculados.php?filtro=todos&ordem=DESC" class="btn btn-primary float" style="margin-right: 5px;">Mais novos</a>
+                            <a href="ultimos_vinculados.php?filtro=todos&ordem=ASC" class="btn btn-primary float" style="margin-right: 5px;">Mais antigos</a>
+                            <a href="ultimos_vinculados.php?filtro=um_dia&ordem=DESC" class="btn btn-primary float" style="margin-right: 5px;">Somente hoje</a>
+                            <a href="ultimos_vinculados.php?filtro=cinco_dias&ordem=DESC" class="btn btn-primary float" style="margin-right: 5px;">Ultimos 5 dias</a>
+                            <a href="ultimos_vinculados.php?filtro=todos&ordem=DESC" class="btn btn-primary float" style="margin-right: 5px;">Todos</a>
+
                         </h4>
                     </div>
                     <div class="card-body">
@@ -44,28 +46,37 @@ $pdo = $connection->getConnection();
                             </thead>
                             <tbody>
                                 <?php
-                                // Definir a ordem padrão como DESC (mais novos)
                                 $ordem = $_GET['ordem'] ?? 'DESC';
+                                $filtro = $_GET['filtro'] ?? 'todos';
                                 
-                                // Validar se é ASC ou DESC
                                 if ($ordem !== 'ASC' && $ordem !== 'DESC') {
                                     $ordem = 'DESC';
                                 }
                                 
-                                $stmt = $pdo->prepare("SELECT * FROM user_colors ORDER BY created_at $ordem");
+                                $sql = "SELECT * FROM user_colors WHERE 1=1";
+                                
+                                if ($filtro === 'um_dia') {
+                                    $hoje = date('Y-m-d');
+                                    $sql .= " AND created_at LIKE '$hoje%'";
+                                } elseif ($filtro === 'cinco_dias') {
+                                    $cinco_dias_atras = date('Y-m-d', strtotime('-5 days'));
+                                    $sql .= " AND created_at >= '$cinco_dias_atras'";
+                                }
+                                
+                                $sql .= " ORDER BY created_at $ordem";
+                                
+                                $stmt = $pdo->prepare($sql);
                                 $stmt->execute();
 
                                 $vinculos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                                if ($vinculos > 0) {
+                                if (count($vinculos) > 0) {
                                     foreach ($vinculos as $vinculo) {
-                                        // Buscar o nome do usuário
                                         $stmt_user = $pdo->prepare("SELECT name FROM users WHERE id = :user_id");
                                         $stmt_user->execute([':user_id' => $vinculo['user_id']]);
                                         $usuario = $stmt_user->fetch(PDO::FETCH_ASSOC);
                                         $nome_usuario = $usuario ? $usuario['name'] : 'Usuário não encontrado';
                                         
-                                        // Separar as cores e buscar os nomes
                                         $color_ids = array_filter(array_map('trim', explode(',', $vinculo['color_id'])));
                                         $cores_nomes = [];
                                         

@@ -25,7 +25,7 @@
                                 <tr>
                                     <th style="width: 33.33%">Gerenciar Nomes</th>
                                     <th style="width: 33.33%">Gerenciar Cores</th>
-                                    <th style="width: 33.33%">Últimos vinculados(nomes/cores)</th>
+                                    <th style="width: 33.33%">Relatorios(nomes/cores)</th>
                                 </tr>
                             </thead>
                             <tbody>

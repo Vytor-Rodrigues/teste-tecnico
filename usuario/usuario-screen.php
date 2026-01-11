@@ -28,6 +28,8 @@ $pdo = $connection->getConnection();
                         <h4>Lista de Usuários
                             <a href="usuario-create.php" class="btn btn-primary float-end">Adicionar Usuário</a>
                             <a href="../index.php" class="btn btn-danger float-end" style="margin-right: 5px;">VOLTAR</a>
+                            <a href="usuario-screen.php?filtro=todos" class="btn btn-primary float" style="margin-right: 5px;">Todos</a>
+                            <a href="usuario-screen.php?filtro=sem_vinc" class="btn btn-primary float" style="margin-right: 5px;">Apenas sem Vinc.</a>
                         </h4>
                     </div>
                     <div class="card-body">
@@ -43,6 +45,8 @@ $pdo = $connection->getConnection();
                             </thead>
                             <tbody>
                                 <?php
+                                $filtro = $_GET['filtro'] ?? 'todos';
+                                
                                 $stmt = $pdo->prepare("SELECT * FROM users");
                                 $stmt->execute();
 
@@ -58,6 +62,10 @@ $pdo = $connection->getConnection();
                                         if ($user_colors && !empty($user_colors['color_id'])) {
                                             $color_ids = array_filter(array_map('trim', explode(',', $user_colors['color_id'])));
                                             $color_count = count($color_ids);
+                                        }
+                                        
+                                        if ($filtro === 'sem_vinc' && $color_count > 0) {
+                                            continue; 
                                         }
                                         ?>
                                         <tr>

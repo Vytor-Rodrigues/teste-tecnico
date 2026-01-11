@@ -1,96 +1,155 @@
-# 🧠 Teste de Conhecimentos — PHP + Banco de Dados
+---
 
-## 🎯 Objetivo
+# 🧠 Teste Técnico — PHP + SQLite
 
-Desenvolver um **CRUD simples em PHP puro**, **sem frameworks**, onde seja possível:
+## 🎯 Objetivo do Projeto
 
-* 👤 Criar, editar, excluir e listar **usuários**
-* 🎨 Criar, editar, excluir e listar **cores**
-* 🎨 Vincular e desvincular **várias cores** a cada usuário
+Este projeto consiste no desenvolvimento de um **CRUD simples em PHP puro**, sem uso de frameworks, com o objetivo de gerenciar:
+
+* 👤 Usuários
+* 🎨 Cores
+* 🔗 Relacionamento **N:N** entre usuários e cores
+
+O sistema permite criar, editar, listar e excluir usuários e cores, além de **vincular e desvincular múltiplas cores a cada usuário**, respeitando regras de negócio específicas.
 
 ---
 
-## 🗄️ Estrutura de Banco de Dados
+## 🛠️ Tecnologias Utilizadas
 
-O projeto utiliza **SQLite**, com o arquivo de banco localizado em:
+* **PHP 8.4**
+* **SQLite**
+* **PDO** para acesso ao banco de dados
+* **Bootstrap** para estilização da interface
+* HTML + CSS
+* JavaScript mínimo (apenas para pequenos comportamentos de interface)
+
+---
+
+## 🗄️ Banco de Dados
+
+O banco de dados utilizado é **SQLite**, conforme requisito do teste.
+
+* Arquivo:
+
+  ```
+  database/db.sqlite
+  ```
+* Contém:
+
+  * Estrutura das tabelas
+  * Relacionamento entre usuários e cores
+  * Registros iniciais para teste
+
+A conexão com o banco é feita através de um **arquivo único**, utilizando **POO** e **PDO**, garantindo maior segurança e reutilização.
+
+---
+
+## 📁 Estrutura do Projeto
+
+A organização do projeto foi feita por **responsabilidade funcional**, separando usuários, cores e relatórios em diretórios distintos:
 
 ```
-database/db.sqlite
+prova-php-entrevista-master/
+├── index.php
+├── cores/
+│   ├── cores-screen.php
+│   ├── cores-create.php
+│   └── outros arquivos relacionados a cores
+├── usuario/
+│   ├── usuario-screen.php
+│   ├── usuario-create.php
+│   └── outros arquivos relacionados a usuários
+├── ultimos/
+│   └── ultimos_vinculados.php
+└── outros arquivos do projeto
 ```
 
-A base já contém:
-
-* Estrutura das tabelas necessárias;
-* Alguns registros iniciais;
-* Exemplo de conexão.
+Essa abordagem facilita a leitura do código e a manutenção, mesmo sem o uso de frameworks.
 
 ---
 
-## ⚙️ Regras de Negócio
+## ⚙️ Regras de Negócio Implementadas
 
-* 🚫 Um **usuário não pode ter cores repetidas**;
-* 🔒 Uma **cor não pode ser excluída** se estiver associada a algum usuário;
-* 📋 Na **listagem de usuários**, exibir:
-
-  * Quantidade de cores vinculadas;
-* 🎨 Na **listagem de cores**, exibir:
-
-  * Quantidade de usuários vinculados;
-* ✨ Cores **sem associação** com usuários devem ser facilmente localizadas na listagem.
+✔️ Um usuário **não pode ter cores repetidas**
+✔️ Uma cor **não pode ser excluída** se estiver vinculada a algum usuário
+✔️ Na listagem de usuários é exibida a **quantidade de cores vinculadas**
+✔️ Na listagem de cores é exibida a **quantidade de usuários vinculados**
+✔️ Cores **sem associação** com usuários podem ser facilmente identificadas na listagem
 
 ---
 
-## 💡 Funcionalidades Opcionais
+##  Funcionalidades Extras Implementadas
 
-As funcionalidades abaixo não são obrigatórias, mas contarão pontos extras:
+### 🗓️ Relatório por Período
 
-* 🗓️ Relatório de cores vinculadas por período;
-* 🔐 Autenticação ou controle de sessão;
-* ✅ Cobertura de testes.
+Foi implementado um **relatório de cores vinculadas por período**, permitindo filtrar associações com base em datas, atendendo a um dos requisitos opcionais do teste.
 
 ---
 
-## 🧩 Critérios de Avaliação
+## 🖥️ Interface e Usabilidade
 
-| Critério                 | Descrição                                              |
-| ------------------------ | -------------------------------------------------------|
-| ⚙️ Funcionalidade        | O CRUD de usuários e cores deve funcionar corretamente |
-| 🧱 Organização do código | Estrutura clara e modular                              |
-| 🧭 Padrão de projeto     | Aplicação de padrões de projeto                        |
-| 🖥️ Usabilidade           | Interface simples, funcional e intuitiva               |
-
----
-
-## 📦 Requisitos da Entrega
-
-* Projeto **funcional** em **PHP puro** com **SQLite**;
-* Ao final deste README, adicione:
-
-  * 🧱 Decisões de arquitetura;
-  * 📜 Regras implementadas;
-  * ⚠️ Dificuldades enfrentadas.
+* Interface simples e funcional
+* Utilização do **Bootstrap** para layout e responsividade
+* Navegação intuitiva
+* Uso mínimo de JavaScript, priorizando formulários tradicionais em PHP
 
 ---
 
 ## ▶️ Execução do Projeto
 
-Para iniciar o servidor embutido do PHP, execute:
+1. Certifique-se de ter o **PHP 8.4** instalado com a extensão **SQLite habilitada**
+2. No diretório do projeto, execute:
 
 ```bash
 php -S 0.0.0.0:7070
 ```
 
-Depois, acesse no navegador:
+3. Acesse no navegador:
 
 👉 [http://localhost:7070](http://localhost:7070)
 
-> **Importante:** Certifique-se de que a extensão **SQLite** está instalada e habilitada no seu PHP.
+---
+
+## 🧱 Decisões de Arquitetura
+
+* Utilização de **PHP puro**, conforme exigido no teste
+* Separação de responsabilidades por diretórios (usuário, cores, relatórios)
+* Conexão com banco centralizada em um único arquivo utilizando **POO**
+* Uso de **PDO e prepared statements** para maior segurança contra SQL Injection
+* SQLite escolhido por ser um banco leve, simples de configurar e adequado ao escopo do projeto
 
 ---
 
-## 🍀 Boa Sorte!
+## 📜 Regras Implementadas
 
-Use seu conhecimento, explore a documentação e busque soluções criativas.
-Mostre o melhor do seu **raciocínio lógico e domínio de PHP** 🚀
+* Controle de duplicidade de cores por usuário
+* Validação de exclusão de cores vinculadas
+* Contadores de relacionamentos nas listagens
+* Relatório com filtragem por data
 
 ---
+
+## ⚠️ Dificuldades Enfrentadas
+
+* **Organização do projeto sem framework**, exigindo mais código manual para funcionalidades simples
+* Implementação de **filtros por período utilizando SQLite**, tecnologia que ainda não havia sido utilizada anteriormente
+* Primeira experiência com **SQLite e sua conexão via PDO**, exigindo estudo da documentação
+
+Esses desafios contribuíram para um melhor entendimento do funcionamento interno do PHP e do banco de dados.
+
+---
+
+## 🍀 Considerações Finais
+
+O projeto cumpre todos os requisitos obrigatórios do teste e implementa funcionalidades extras.
+O foco foi entregar um código funcional, organizado e de fácil entendimento, demonstrando domínio dos conceitos fundamentais de **PHP, banco de dados e regras de negócio**.
+
+🚀 Obrigado pela oportunidade!
+
+---
+
+Se quiser, posso:
+
+* Ajustar o **tom** (mais formal ou mais direto)
+* Adaptar para **README em inglês**
+* Revisar como se fosse um **avaliador técnico** e sugerir melhorias

@@ -28,6 +28,8 @@ $pdo = $connection->getConnection();
                         <h4>Lista de Cores
                             <a href="cores-create.php" class="btn btn-primary float-end">Adicionar cor</a>
                             <a href="../index.php" class="btn btn-danger float-end" style="margin-right: 5px;">VOLTAR</a>
+                            <a href="cores-screen.php?filtro=todos" class="btn btn-primary float" style="margin-right: 5px;">Todos</a>
+                            <a href="cores-screen.php?filtro=sem_vinc" class="btn btn-primary float" style="margin-right: 5px;">Apenas sem Vinc.</a>
                         </h4>
                     </div>
                     <div class="card-body">
@@ -43,6 +45,8 @@ $pdo = $connection->getConnection();
                             </thead>
                             <tbody>
                                 <?php
+                                $filtro = $_GET['filtro'] ?? 'todos';
+                                
                                 $stmt = $pdo->prepare("SELECT * FROM colors");
                                 $stmt->execute();
 
@@ -50,7 +54,6 @@ $pdo = $connection->getConnection();
 
                                 if ($cores > 0) {
                                     foreach ($cores as $colors) {
-                                        // Buscar quantos usuários têm essa cor vinculada
                                         $stmt_users = $pdo->prepare("SELECT color_id FROM user_colors");
                                         $stmt_users->execute();
                                         $all_user_colors = $stmt_users->fetchAll(PDO::FETCH_ASSOC);
@@ -58,12 +61,15 @@ $pdo = $connection->getConnection();
                                         $user_count = 0;
                                         foreach ($all_user_colors as $user_color_record) {
                                             if (!empty($user_color_record['color_id'])) {
-                                                // Separar os IDs de cores e verificar se a cor atual está presente
                                                 $color_ids = array_filter(array_map('trim', explode(',', $user_color_record['color_id'])));
                                                 if (in_array($colors['id'], $color_ids)) {
                                                     $user_count++;
                                                 }
                                             }
+                                        }
+                                        
+                                        if ($filtro === 'sem_vinc' && $user_count > 0) {
+                                            continue;
                                         }
                                         ?>
                                         <tr>
@@ -76,6 +82,7 @@ $pdo = $connection->getConnection();
                                                     class="btn btn-secondary btn-sm">Visualizar</a>
                                                 <a href="cores-edit.php?id=<?= $colors['id'] ?>"
                                                     class="btn btn-success btn-sm8">Editar</a>
+                                                <?php if ($user_count == 0) { ?>
                                                 <form action="cores-action.php" method="POST" class="d-inline">
                                                     <input type="hidden" name="cor_id" value="<?= $colors['id'] ?>">
                                                      <input type="hidden" name="users_count" value="<?= $user_count ?>">
@@ -83,6 +90,7 @@ $pdo = $connection->getConnection();
                                                         Deletar
                                                     </button>
                                                 </form>
+                                                <?php } ?>
                                             </td>
                                         </tr>
                                     <?php }

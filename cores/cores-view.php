@@ -21,20 +21,18 @@ $connection = new Connection();
                 <div class="card">
                     <div class="card-header">
                         <h4>Visualizar Cor
-                            <a href="../index.php" class="btn btn-danger float-end">VOLTAR</a>
+                            <a href="cores-screen.php" class="btn btn-danger float-end">VOLTAR</a>
                         </h4>
                     </div>
                     <div class="card-body">
                         <?php
 
                         if (isset($_GET['id'])) {
-                            // Obter o ID da cor da URL
                             $color_id = $_GET['id'];
                             $sql = "SELECT * FROM colors WHERE id = :id";
                             $stmt = $connection->getConnection()->prepare($sql);
                             $stmt->execute(['id' => $color_id]);
 
-                            // Verificar se as cores existem
                             $pdo = $connection->getConnection();
                             $stmt2 = $pdo->prepare("SELECT COUNT(*) as total FROM colors");
                             $stmt2->execute();
@@ -44,7 +42,6 @@ $connection = new Connection();
                             if ($total > 0) {
                                 $cor = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                                // Buscar todos os usuários que têm essa cor vinculada
                                 $stmt_all_colors = $pdo->prepare("SELECT user_id, color_id FROM user_colors");
                                 $stmt_all_colors->execute();
                                 $all_user_colors = $stmt_all_colors->fetchAll(PDO::FETCH_ASSOC);
@@ -52,11 +49,8 @@ $connection = new Connection();
                                 $users_with_color = [];
                                 foreach ($all_user_colors as $user_color_record) {
                                     if (!empty($user_color_record['color_id'])) {
-                                        // Separar os IDs de cores
                                         $color_ids = array_filter(array_map('trim', explode(',', $user_color_record['color_id'])));
-                                        // Verificar se a cor atual está presente
                                         if (in_array($color_id, $color_ids)) {
-                                            // Buscar o nome do usuário
                                             $stmt_user = $pdo->prepare("SELECT name FROM users WHERE id = :user_id");
                                             $stmt_user->execute([':user_id' => $user_color_record['user_id']]);
                                             $user = $stmt_user->fetch(PDO::FETCH_ASSOC);

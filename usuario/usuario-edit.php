@@ -28,13 +28,11 @@ $connection = new Connection();
                     <div class="card-body">
                         <?php
                         if (isset($_GET['id'])) {
-                            // Obter o ID do usuário da URL
                             $usuario_id = $_GET['id'];
                             $sql = "SELECT * FROM users WHERE id = :id";
                             $stmt = $connection->getConnection()->prepare($sql);
                             $stmt->execute(['id' => $usuario_id]);
 
-                            // Verificar se usuários existem
                             $pdo = $connection->getConnection();
                             $stmt2 = $pdo->prepare("SELECT COUNT(*) as total FROM users");
                             $stmt2->execute();
@@ -44,17 +42,14 @@ $connection = new Connection();
                             if ($total > 0) {
                                 $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
                                 
-                                // Buscar todas as cores disponíveis
                                 $stmt_all_colors = $pdo->prepare("SELECT * FROM colors");
                                 $stmt_all_colors->execute();
                                 $cores = $stmt_all_colors->fetchAll(PDO::FETCH_ASSOC);
                                 
-                                // Buscar cores já vinculadas ao usuário
                                 $stmt_user_colors = $pdo->prepare("SELECT color_id FROM user_colors WHERE user_id = :user_id");
                                 $stmt_user_colors->execute([':user_id' => $usuario_id]);
                                 $user_colors_data = $stmt_user_colors->fetch(PDO::FETCH_ASSOC);
                                 
-                                // Preparar array de cores selecionadas com seus nomes
                                 $selected_colors = [];
                                 if ($user_colors_data && !empty($user_colors_data['color_id'])) {
                                     $color_ids = array_filter(array_map('trim', explode(',', $user_colors_data['color_id'])));

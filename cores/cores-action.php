@@ -23,7 +23,6 @@ if (isset($_POST['create_cor'])) {
     if (!empty($selected_users)) {
         $colorId = $pdo->lastInsertId();
         
-        // Para cada usuário selecionado, inserir o vínculo
         foreach ($selected_users as $user_id) {
             $sql_user = "INSERT INTO user_colors (user_id, color_id, created_at) VALUES (:user_id, :color_id, :created_at)";
             $stmt_user = $pdo->prepare($sql_user);
