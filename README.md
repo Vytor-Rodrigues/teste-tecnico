@@ -144,10 +144,3 @@ O foco foi entregar um código funcional, organizado e de fácil entendimento, d
 
 🚀 Obrigado pela oportunidade!
 
----
-
-Se quiser, posso:
-
-* Ajustar o **tom** (mais formal ou mais direto)
-* Adaptar para **README em inglês**
-* Revisar como se fosse um **avaliador técnico** e sugerir melhorias
